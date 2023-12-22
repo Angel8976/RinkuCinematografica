@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Rinku Cinematografica</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/RinkuCinematografica.styles.css" asp-append-version="true" />
+    <link href="~/css/estilos.css" rel="stylesheet" />
+</head>
+<body>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <header>
+        <style>
+            /* Estilo para el degradado */
+            .degradado {
+                background: linear-gradient(to right, #ff9900, #cc0000);
+                /* Cambia los colores y ajusta la dirección según tus preferencias */
+                border: 1px solid #333; /* Bordes para mayor visibilidad */
+            }
+        </style>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3 degradado fixed-top">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Rinku Cinematografica</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Empleado" asp-action="GuardarEmpleado">Registro de empleado</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="CapturaMensual" asp-action="GuardarCapturaMensual">Registro de entregas</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="EditarEmpleado" asp-action="EdicionEmpleado">Editar Empleado</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="EditarCaptura" asp-action="EdicionCaptura">Editar captura</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="ReporteMensual" asp-action="GenerarReporteMensual">Generar reporte de sueldos</a>
+                        </li>
+                    </ul>
+                    <span class="navbar-text">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy"><h5>Aviso de privacidad</h5></a>
+                    </span>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container" style="padding-top:120px">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted degradado">
+        <div class="container">
+            &copy; 2023 - Rinku Cinematografica - <a asp-area="" asp-controller="Home" asp-action="Privacy">Aviso de privacidad</a>
+        </div>
+    </footer>
+    
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

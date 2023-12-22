@@ -1,0 +1,100 @@
+﻿@model RinkuCinematografica.Models.Empleado
+
+<h2>Registro de nuevo empleado</h2>
+
+@using (Html.BeginForm("GuardarEmpleado", "Empleado", FormMethod.Post))
+{
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
+        <div class="col">
+            <label asp-for="Nombre" for="NombreTXT" class="form-label">Nombre(es)</label>
+            <input asp-for="Nombre" id="NombreTXT" class="input-text form-control" />
+        </div>
+
+        <div class="col">
+            <label asp-for="ApellidoP" for="ApellidoPTXT" class="form-label">Apellido paterno</label>
+            <input asp-for="ApellidoP" id="ApellidoPTXT" class="input-text form-control" />
+        </div>
+
+        <div class="col">
+            <label asp-for="AppellidoM" for="AppellidoMTXT" class="form-label">Apellido materno</label>
+            <input asp-for="AppellidoM" id="AppellidoMTXT" class="input-text form-control" />
+        </div>
+
+        <div class="col">
+            <label asp-for="RollID" for="RollID" class="form-label">Nombre del rol</label>
+            @Html.DropDownListFor(model => model.RollID, new SelectList(ViewBag.Roles, "RolID", "NombreRoll"), "Seleccione el rol del empleado", new { @class = "input-numeric form-control" })
+        </div>
+    </div>
+
+    <br />
+
+    <button type="submit" class="btn btn-primary" id="btnGuardar">Guardar</button>
+}
+
+@section scripts {
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        // Validaciones en tiempo real
+        $(document).ready(function () {
+            $('.input-numeric').on('input', function () {
+                // Permite solo números
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+
+            $('.input-text').on('input', function () {
+                // Permite solo letras, espacios, tildes y el símbolo "Ü"
+                this.value = this.value.replace(/[^a-zA-Z\sáéíóúÁÉÍÓÚüÜ]/g, '');
+            });
+
+
+            // Manejo del evento de clic en el botón
+            $('#btnGuardar').click(function (e) {
+                e.preventDefault(); // Evita el envío del formulario por defecto
+
+                // Guardar una referencia al formulario
+                var form = $('form');
+
+                // Envío del formulario a través de AJAX
+                $.ajax({
+                    url: '@Url.Action("GuardarEmpleado", "Empleado")',
+                    method: 'POST',
+                    data: form.serialize(),
+                    success: function (data) {
+                        // Verificación del resultado y muestra de SweetAlert
+                        var isErrorMessage = data.message.startsWith('Error');
+
+                        if (isErrorMessage) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: data.message
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Éxito',
+                                text: data.message
+                            }).then((result) => {
+                                // Limpiar los campos del formulario después de cerrar la alerta de éxito
+                                if (result.isConfirmed) {
+                                    form.trigger('reset');
+                                }
+                            });
+                        }
+                    },
+                    error: function () {
+                        // Manejo de errores
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Hubo un error al procesar la solicitud.'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}
+

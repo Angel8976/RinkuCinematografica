@@ -1,0 +1,106 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<style>
+    /* a.nav-link {
+        text-decoration: none; /* Quitar subrayado */
+        color: inherit; /* Heredar color del texto */
+    }
+
+        a.nav-link:hover {
+            color: inherit; /* Cambiar color al pasar el mouse */
+        }
+
+    .card {
+        transition: transform 0.5s ease-in-out, box-shadow 0.9s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-21px);
+            box-shadow: 0 0 35px rgba(0, 0, 0, 0.2);
+            opacity: 0.9;
+        }
+
+    .tarjeta {
+        background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente para las tarjetas */
+    } 
+
+</style>
+
+<div class="text-center">
+    <h1 class="fs-1" style="color:azure">Bienvenido</h1>
+    <p>Elije una de las opciones operativas</p>
+
+    <div class="container">
+        <div class="row row-cols-1 row-cols-sm-3 row-cols-md-5 g-5">
+
+            <!-- Columna 1 -->
+            <div class="col mb-4">
+                <a href="@Url.Action("GuardarEmpleado", "Empleado")" style="text-decoration: none; color: inherit;">
+                    <div class="card tarjeta">
+                        <img src="/IMG/RegistrarEmpleado.jpg" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">Registrar empleado</h5>
+                            <p class="card-text">Registro de nuevos empleados.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Columna 2 -->
+            <div class="col mb-4">
+                <a href="@Url.Action("GuardarCapturaMensual", "CapturaMensual")" style="text-decoration: none; color: inherit;">
+                    <div class="card tarjeta">
+                        <img src="/IMG/RegistrarEntrega.jpg" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">Registrar entrega</h5>
+                            <p class="card-text">Registro de entregas para los empleados.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Columna 3 -->
+            <div class="col mb-4">
+                <a href="@Url.Action("EdicionEmpleado", "EditarEmpleado")" style="text-decoration: none; color: inherit;">
+                    <div class="card tarjeta">
+                        <img src="/IMG/BuscarEmpleado.jpg" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">Busqueda/edicion de empleados</h5>
+                            <p class="card-text">Puede consultar el registro de empleados y editar su informacion.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Columna 4 -->
+            <div class="col mb-4">
+                <a href="@Url.Action("EdicionCaptura", "EditarCaptura")" style="text-decoration: none; color: inherit;">
+                    <div class="card tarjeta">
+                        <img src="/IMG/BuscarEntrega.jpg" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">Busqueda/edicion de entregas</h5>
+                            <p class="card-text">Puede consultar el registro de entregas y editar su informacion.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Columna 5 -->
+            <div class="col mb-4">
+                <a href="@Url.Action("GenerarReporteMensual", "ReporteMensual")" style="text-decoration: none; color: inherit;">
+                    <div class="card tarjeta">
+                        <img src="/IMG/ReporteSueldos.jpg" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">Reporte de sueldos</h5>
+                            <p class="card-text">Genera un reporte de sueldos mensuales de los empleados. Puede seleccionar meses y años distintos.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+</div>

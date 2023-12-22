@@ -1,0 +1,204 @@
+﻿@model RinkuCinematografica.Models.Empleado
+
+@using (Html.BeginForm("EdicionEmpleado", "EditarEmpleado", FormMethod.Post))
+{
+
+<div class="row row-cols-1 row-cols-sm-3 row-cols-md-3 g-3">
+        <div class="col">
+            <label for="MesTxT" class="form-label">Mes:</label>
+            <input id="MesTxT" class="form-control" type="text" maxlength="2" oninput="validarMes(this)" />
+        </div>
+
+        <div class="col">
+            <label for="AnioTxt" class="form-label">Año:</label>
+            <input id="AnioTxt" class="form-control" type="text" maxlength="4" oninput="validarAnio(this)" />
+        </div>
+
+        <div class="col">
+            <button type="button" class="btn btn-primary" id="Buscar">Buscar</button>
+        </div>
+</div>
+
+<div class="col">
+    <label for="autocomplete" class="form-label"><b>Buscar Empleado</b></label>
+    <input id="autocomplete" class="form-control" list="empleados" />
+    <br />
+    <div id="gridContainer" style="overflow:scroll">
+        <table class="table table-striped table-dark">
+            <thead>
+                <tr>
+                    <th>Empleado ID</th>
+                    <th>Nombre</th>
+                    <th>Apellido paterno</th>
+                    <th>Apellido materno</th>
+                    <th>Nombre del Rol</th>
+                    <th>Entgregas realizadas</th>
+                    <th>Fecha</th>
+                    <th>Sueldo  base</th>
+                    <th>Bono por hora</th>
+                    <th>Retenciones ISR</th>
+                    <th>Vales de despensa</th>
+                    <th>Sueldo total</th>
+                </tr>
+            </thead>
+            <tbody id="gridBody" class="table-group-divider">
+                <!-- Filas del grid se llenarán dinámicamente mediante JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+</div>
+}
+
+@section scripts {
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        var ReporteSueldos = @Html.Raw(Json.Serialize(Model));
+        // Validaciones en tiempo real
+
+        function validarMes(input) {
+            // Obtener el valor del input
+            var valor = input.value;
+
+            // Verificar que solo sean números
+            if (!/^\d+$/.test(valor)) {
+                input.value = valor.substring(0, valor.length - 1);
+                return;
+            }
+
+            // Convertir a número
+            var numero = parseInt(valor);
+
+            // Asegurarse de que esté en el rango de 1 a 12
+            if (numero < 1 || numero > 12) {
+                input.value = valor.substring(0, valor.length - 1);
+            }
+        }
+
+        function validarAnio(input) {
+            // Obtener el valor del input
+            var valor = input.value;
+
+            // Verificar que solo sean números
+            if (!/^\d+$/.test(valor)) {
+                input.value = valor.substring(0, valor.length - 1);
+            }
+        }
+
+        $(document).ready(function () {
+            actualizarGridDesdeServidor(ReporteSueldos);
+
+            // Handler para el evento de entrada en el input
+            $('#autocomplete').on('input', function () {
+                actualizarLista();
+            });
+
+            // Método para actualizar la lista según el estado del checkbox y el texto de entrada
+            function actualizarLista() {
+                var term = $('#autocomplete').val().toLowerCase(); // Convertir el término de búsqueda a minúsculas
+
+                // Lógica de filtrado en el lado del cliente
+                var rows = $('#gridBody tr');
+
+                rows.hide(); // Ocultar todas las filas inicialmente
+
+                if (term) {
+                    // Convertir el contenido de las filas a minúsculas y mostrar solo las filas que coincidan
+                    rows.filter(function () {
+                        return $(this).text().toLowerCase().indexOf(term) > -1;
+                    }).show();
+                } else {
+                    // Si no hay término, mostrar todas las filas
+                    rows.show();
+                }
+            }
+
+            // Método para actualizar el grid llamando al servidor
+            function actualizarGridDesdeServidor() {
+                var Mes = $('#MesTxT').val();
+                var Anio = $('#AnioTxt').val();
+
+                console.log("Mes:", Mes);
+                console.log("Anio:", Anio);
+
+                // Llama al método en el controlador con los parámetros necesarios
+                $.ajax({
+                    url: '/ReporteMensual/GenerarReporte',
+                    type: 'GET',
+                    data: { term: null, Mes: Mes, Anio: Anio },
+                    success: function (data) {
+                        // Actualiza el grid con los nuevos datos del servidor
+                        actualizarGrid(data);
+                    },
+                    error: function () {
+                        console.error('Error al actualizar la lista de empleados desde el servidor.');
+                    }
+                });
+            }
+
+            function actualizarGrid(data) {
+                var gridContainer = $('#gridContainer');
+                var gridBody = $('#gridBody');
+
+                // Limpiar el cuerpo del grid
+                gridBody.empty();
+
+                if (data && data.length > 0) {
+                    gridContainer.show();
+
+                    for (var i = 0; i < data.length; i++) {
+                        var row = $('<tr></tr>');
+                        row.append('<td>' + data[i].empleadoID + '</td>');
+                        row.append('<td>' + data[i].nombre + '</td>');
+                        row.append('<td>' + data[i].apellidoP + '</td>');
+                        row.append('<td>' + data[i].apellidoM + '</td>');
+                        row.append('<td>' + data[i].nombreRoll + '</td>');
+                        row.append('<td>' + data[i].entregasRealizadas + '</td>');
+                        row.append('<td>' + obtenerMesYAnio(data[i].fecha) + '</td>');
+                        row.append('<td>' + formatearComoMoneda(data[i].sueldoBase) + '</td>');
+                        row.append('<td>' + formatearComoMoneda(data[i].bonoPorHora) + '</td>');
+                        row.append('<td>' + formatearComoMoneda(data[i].retencionesISR) + '</td>');
+                        row.append('<td>' + formatearComoMoneda(data[i].valesDeDespensa) + '</td>');
+                        row.append('<td>' + formatearComoMoneda(data[i].sueldoTotal) + '</td>');
+
+                        gridBody.append(row);
+                    }
+
+                } else {
+                    gridContainer.hide();
+                }
+            }
+
+            function obtenerMesYAnio(fecha) {
+                // Obtener el objeto de fecha desde la cadena proporcionada
+                var date = new Date(fecha);
+
+                // Obtener el mes y el año
+                var mes = date.toLocaleString('default', { month: 'long' });
+                var anio = date.getFullYear();
+
+                // Crear la cadena en el formato deseado
+                var resultado = mes + ' ' + anio;
+
+                return resultado;
+            }
+
+            function formatearComoMoneda(numero) {
+                // Si el número es nulo o indefinido, devolver una cadena vacía
+                if (numero == null || isNaN(numero)) {
+                    return '';
+                }
+
+                // Formatear como moneda con comas y dos decimales
+                return '$' + numero.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }
+
+            // Manejador de eventos para el clic en el botón "Buscar"
+            $('#Buscar').on('click', function () {
+                actualizarGridDesdeServidor();
+            });
+        });
+    </script>
+}

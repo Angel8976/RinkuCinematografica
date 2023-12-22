@@ -1,0 +1,35 @@
+﻿body {
+    background-image: url(../IMG/Fondo3.jpg); /* Ruta de la imagen de fondo */
+    background-repeat: no-repeat; /* No repetir la imagen */
+    background-size: cover; /* Ajustar la imagen al tamaño del contenedor */
+    text-shadow: 1px 1px 1px #000; /* Sombra de texto */
+    color: #fff; /* Color de texto */
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+}
+
+h1, h2, h3, p {
+    text-shadow: 1px 1px 1px #000; /* Sombra de texto */
+}
+
+a.nav-link {
+    text-decoration: none; /* Quitar subrayado */
+    color: inherit; /* Heredar color del texto */
+}
+
+    a.nav-link:hover {
+        color: inherit; /* Cambiar color al pasar el mouse */
+    }
+
+.card {
+    transition: transform 0.5s ease-in-out, box-shadow 0.9s ease;
+}
+
+    .card:hover {
+        transform: translateY(-21px);
+        box-shadow: 0 0 35px rgba(0, 0, 0, 0.2);
+        opacity: 0.9;
+    }
+
+.tarjeta {
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente para las tarjetas */
+}

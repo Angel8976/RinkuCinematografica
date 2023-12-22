@@ -1,0 +1,103 @@
+﻿@model RinkuCinematografica.Models.CapturaMensual
+
+<h2>Registro de nueva captura mensual</h2>
+
+@using (Html.BeginForm("GuardarCapturaMensual", "CapturaMensual", FormMethod.Post))
+{
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2">
+        <div class="col">
+            <label for="autocomplete" class="form-label">Buscar Empleado</label>
+            <input id="autocomplete" class="form-control" list="empleados" />
+            <input type="hidden" asp-for="EmpleadoID" id="EmpleadoIDTXT" />
+            <datalist id="empleados">
+                @foreach (var empleado in ViewBag.Empleados)
+                {
+                    <option data-value="@empleado.EmpleadoID" value="@($"{empleado.EmpleadoID}-{empleado.Nombre}")" />
+                }
+            </datalist>
+        </div>
+
+        <div class="col">
+            <label asp-for="EntregasRealizadas" for="EntregasRealizadasTXT" class="form-label">Entregas realizadas</label>
+            <input asp-for="EntregasRealizadas" id="EntregasRealizadasTXT" class="input-numeric form-control" />
+        </div>
+    </div>
+
+    <br />
+
+    <button type="submit" class="btn btn-primary" id="btnGuardar">Guardar</button>
+}
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            // Al seleccionar un empleado del datalist, establecer el valor en el campo oculto
+            $("#autocomplete").on("input", function () {
+                var inputText = $(this).val().trim();
+                var options = $("#empleados option");
+
+                // Buscar coincidencias en ID o nombre
+                var selectedOption = options.filter(function () {
+                    return $(this).val().startsWith(inputText);
+                });
+
+                if (selectedOption.length > 0) {
+                    $("#EmpleadoIDTXT").val(selectedOption.attr("data-value"));
+                } else {
+                    $("#EmpleadoIDTXT").val("");
+                }
+            });
+
+            $('.input-numeric').on('input', function () {
+                // Permite solo números
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+
+            // Manejo del evento de clic en el botón
+            $('#btnGuardar').click(function (e) {
+                e.preventDefault(); // Evita el envío del formulario por defecto
+
+                // Guardar una referencia al formulario
+                var form = $('form');
+
+                // Envío del formulario a través de AJAX
+                $.ajax({
+                    url: '@Url.Action("GuardarCapturaMensual", "CapturaMensual")',
+                    method: 'POST',
+                    data: form.serialize(),
+                    success: function (data) {
+                        // Verificación del resultado y muestra de SweetAlert
+                        var isErrorMessage = data.message.startsWith('Error');
+
+                        if (isErrorMessage) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: data.message
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Éxito',
+                                text: data.message
+                            }).then((result) => {
+                                // Limpiar los campos del formulario después de cerrar la alerta de éxito
+                                if (result.isConfirmed) {
+                                    form.trigger('reset');
+                                }
+                            });
+                        }
+                    },
+                    error: function () {
+                        // Manejo de errores
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Hubo un error al procesar la solicitud.'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}
